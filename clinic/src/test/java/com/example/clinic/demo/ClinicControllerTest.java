@@ -66,4 +66,23 @@ class ClinicControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.patientRegistration").value("Marek Kowal"));
     }
+
+    @Test
+    void shouldCreateClinic() throws Exception {
+        Clinic createdClinic = Clinic.builder()
+                .id(1L)
+                .patientRegistration("Marek Kowal")
+                .dataUpdate("20.06.2007")
+                .visitCheck("29.06.2007")
+                .build();
+
+        when(clinicService.createClinic(any(Clinic.class))).thenReturn(createdClinic);
+
+        mockMvc.perform(post("/api/clinics")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"patientRegistration\":\"Marek Kowal\",\"dataUpdate\":\"20.06.2007\",\"visitCheck\":\"20.06.2007\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.patientRegistration").value("Marek Kowal"));
+    }
 }
