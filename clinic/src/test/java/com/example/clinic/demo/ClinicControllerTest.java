@@ -26,5 +26,28 @@ class ClinicControllerTest {
     @MockBean
     private ClinicService clinicService;
 
-    
+    @Test
+    void shouldReturnAllClinics() throws Exception {
+        Clinic clinic1 = Clinic.builder()
+                .id(1L)
+                .patientRegistration("Marek Kowal")
+                .dataUpdate("20.06.2007")
+                .visitCheck("29.06.2007")
+                .build();
+
+        Clinic clinic2 = Clinic.builder()
+                .id(2L)
+                .patientRegistration("John Smith")
+                .dataUpdate("15.02.2004")
+                .visitDeletion("15.02.2004")
+                .build();
+
+        when(clinicService.getAllClinics()).thenReturn(Arrays.asList(clinic1, clinic2));
+
+        mockMvc.perform(get("/api/clinics"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].patientRegistration").value("Marek Kowal"))
+                .andExpect(jsonPath("$[1].patientRegistration").value("John Smith"));
+    }
 }
