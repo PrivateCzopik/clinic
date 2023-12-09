@@ -85,4 +85,12 @@ class ClinicControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.patientRegistration").value("Marek Kowal"));
     }
+
+    @Test
+    void shouldDeleteClinic() throws Exception {
+        when(clinicService.deleteClinic(1L)).thenReturn(true);
+
+        mockMvc.perform(delete("/api/clinics/1"))
+                .andExpect(status().isNoContent());
+    }
 }
