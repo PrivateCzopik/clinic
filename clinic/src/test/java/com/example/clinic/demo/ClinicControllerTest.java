@@ -50,4 +50,20 @@ class ClinicControllerTest {
                 .andExpect(jsonPath("$[0].patientRegistration").value("Marek Kowal"))
                 .andExpect(jsonPath("$[1].patientRegistration").value("John Smith"));
     }
+
+    @Test
+    void shouldReturnClinicById() throws Exception {
+        Clinic clinic = Clinic.builder()
+                .id(1L)
+                .patientRegistration("Marek Kowal")
+                .dataUpdate("20.06.2007")
+                .visitCheck("29.06.2007")
+                .build();
+        when(clinicService.getClinicById(1L)).thenReturn(clinic);
+
+        mockMvc.perform(get("/api/clinics/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.patientRegistration").value("Marek Kowal"));
+    }
 }
