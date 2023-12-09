@@ -1,6 +1,8 @@
 package com.example.clinic.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,27 +19,40 @@ public class ClinicController {
     }
 
     @GetMapping
-    public List<Clinic> getAllClinics() {
-        return clinicService.getAllClinics();
+    public ResponseEntity<List<Clinic>> getAllClinics() {
+        List<Clinic> clinics = clinicService.getAllClinics();
+        return new ResponseEntity<>(clinics, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Clinic getClinicById(@PathVariable Long id) {
-        return clinicService.getClinicById(id);
+    public ResponseEntity<Clinic> getClinicById(@PathVariable Long id) {
+        Clinic clinic = clinicService.getClinicById(id);
+        return new ResponseEntity<>(clinic, HttpStatus.OK);
     }
 
     @PostMapping
-    public Clinic createClinic(@RequestBody Clinic clinic) {
-        return clinicService.createClinic(clinic);
+    public ResponseEntity<Clinic> createClinic(@RequestBody Clinic clinic) {
+        Clinic createdClinic = clinicService.createClinic(clinic);
+        return new ResponseEntity<>(createdClinic, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public Clinic updateClinic(@PathVariable Long id, @RequestBody Clinic updatedClinic) {
-        return clinicService.updateClinic(id, updatedClinic);
+    public ResponseEntity<Clinic> updateClinic(@PathVariable Long id, @RequestBody Clinic updatedClinic) {
+        Clinic clinic = clinicService.updateClinic(id, updatedClinic);
+        if (clinic != null) {
+            return new ResponseEntity<>(clinic, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public void deleteClinic(@PathVariable Long id) {
-        clinicService.deleteClinic(id);
+    public ResponseEntity<Void> deleteClinic(@PathVariable Long id) {
+        boolean deleted = clinicService.deleteClinic(id);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
