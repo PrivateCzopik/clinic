@@ -9,43 +9,35 @@ import java.util.List;
 @RequestMapping("/api/clinics")
 public class ClinicController {
 
-    private final ClinicRepository clinicRepository;
+    private final ClinicService clinicService;
 
-    public ClinicController(ClinicRepository clinicRepository) {
-        this.clinicRepository = clinicRepository;
+    @Autowired
+    public ClinicController(ClinicService clinicService) {
+        this.clinicService = clinicService;
     }
 
     @GetMapping
     public List<Clinic> getAllClinics() {
-        return clinicRepository.findAll();
+        return clinicService.getAllClinics();
     }
 
     @GetMapping("/{id}")
     public Clinic getClinicById(@PathVariable Long id) {
-        return clinicRepository.findById(id).orElse(null);
+        return clinicService.getClinicById(id);
     }
 
     @PostMapping
     public Clinic createClinic(@RequestBody Clinic clinic) {
-        return clinicRepository.save(clinic);
+        return clinicService.createClinic(clinic);
     }
 
     @PutMapping("/{id}")
     public Clinic updateClinic(@PathVariable Long id, @RequestBody Clinic updatedClinic) {
-        Clinic existingClinic = clinicRepository.findById(id).orElse(null);
-
-        if (existingClinic != null) {
-            existingClinic.setPatientRegistration(updatedClinic.getPatientRegistration());
-            existingClinic.setDataUpdate(updatedClinic.getDataUpdate());
-            existingClinic.setVisitDeletion(updatedClinic.getVisitDeletion());
-            existingClinic.setVisitCheck(updatedClinic.getVisitCheck());
-            return clinicRepository.save(existingClinic);
-        }
-        return null;
+        return clinicService.updateClinic(id, updatedClinic);
     }
 
     @DeleteMapping("/{id}")
     public void deleteClinic(@PathVariable Long id) {
-        clinicRepository.deleteById(id);
+        clinicService.deleteClinic(id);
     }
 }
